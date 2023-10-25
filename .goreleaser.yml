@@ -3,13 +3,13 @@ before:
     - go mod tidy
 gomod:
   proxy: true
-build:
-  goarch:
-    - amd64
-    - arm64
-  goos: [linux]
-  env:
-    - CGO_ENABLED=0
+builds:
+  - goarch:
+      - amd64
+      - arm64
+    goos: [linux]
+    env:
+      - CGO_ENABLED=0
 nfpms:
   - vendor: Becker Software LTDA
     homepage: https://carlosbecker.com
