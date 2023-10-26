@@ -5,7 +5,7 @@ go 1.21.1
 require (
 	github.com/alecthomas/kingpin v2.2.6+incompatible
 	github.com/caarlos0/env/v9 v9.0.0
-	github.com/caarlos0/go-solarman v0.1.0
+	github.com/caarlos0/go-solarman v0.1.1
 	github.com/charmbracelet/log v0.2.5
 	github.com/prometheus/client_golang v1.17.0
 )
