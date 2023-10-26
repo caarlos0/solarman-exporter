@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/alecthomas/kingpin"
-	"github.com/caarlos0/solarman-exporter/client"
+	"github.com/caarlos0/go-solarman"
 	"github.com/caarlos0/solarman-exporter/collector"
 	"github.com/caarlos0/solarman-exporter/config"
 	"github.com/charmbracelet/log"
@@ -30,15 +30,20 @@ func main() {
 
 	cfg := config.Must()
 
-	client, err := client.New(cfg)
+	client, err := solarman.New(
+		cfg.AppID,
+		cfg.AppSecret,
+		cfg.Username,
+		cfg.Password,
+	)
 	if err != nil {
 		log.Fatal("error creating client", "err", err)
 	}
 
-	prometheus.MustRegister(collector.CurrentCollector(client))
+	prometheus.MustRegister(collector.CurrentCollector(client, cfg.InverterSN))
 	http.Handle("/metrics", promhttp.Handler())
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
 		fmt.Fprintf(
 			w, `
 			<html>
@@ -51,7 +56,7 @@ func main() {
 			`,
 		)
 	})
-	log.Info("listening on", *bind)
+	log.Info("listening", "addr", *bind)
 	if err := http.ListenAndServe(*bind, nil); err != nil {
 		log.Fatal("error starting server", "err", err)
 	}

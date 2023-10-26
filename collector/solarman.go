@@ -5,14 +5,15 @@ import (
 	"sync"
 	"time"
 
-	"github.com/caarlos0/solarman-exporter/client"
+	"github.com/caarlos0/go-solarman"
 	"github.com/charmbracelet/log"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
 type currentCollector struct {
-	mutex  sync.Mutex
-	client *client.Client
+	mutex      sync.Mutex
+	client     *solarman.Client
+	inverterSN string
 
 	up             *prometheus.Desc
 	scrapeDuration *prometheus.Desc
@@ -25,11 +26,12 @@ type currentCollector struct {
 }
 
 // CurrentCollector returns a releases collector
-func CurrentCollector(client *client.Client) prometheus.Collector {
+func CurrentCollector(client *solarman.Client, inverterSN string) prometheus.Collector {
 	const namespace = "solarman"
 	const subsystem = "inverter"
 	return &currentCollector{
-		client: client,
+		client:     client,
+		inverterSN: inverterSN,
 		up: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, subsystem, "up"),
 			"Exporter is being able to talk with Solarman API",
@@ -84,9 +86,9 @@ func (c *currentCollector) Collect(ch chan<- prometheus.Metric) {
 	defer func() {
 		ch <- prometheus.MustNewConstMetric(c.scrapeDuration, prometheus.GaugeValue, time.Since(start).Seconds())
 	}()
-	data, err := c.client.CurrentData()
+	data, err := c.client.CurrentData(c.inverterSN)
 	if err != nil {
-		log.Errorf("failed to collect", "err", err)
+		log.Error("failed to collect", "err", err)
 		ch <- prometheus.MustNewConstMetric(c.up, prometheus.GaugeValue, 0)
 		return
 	}
@@ -99,7 +101,7 @@ func (c *currentCollector) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(c.up, prometheus.GaugeValue, 1)
 }
 
-func get(data client.CurrentData, key string) float64 {
+func get(data solarman.CurrentData, key string) float64 {
 	for _, s := range data.DataList {
 		if s.Key == key {
 			f, err := strconv.ParseFloat(s.Value, 64)
