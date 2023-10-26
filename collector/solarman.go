@@ -21,6 +21,7 @@ type currentCollector struct {
 	outputPower          *prometheus.Desc // APo_t1 W
 	cumulativeProduction *prometheus.Desc // Et_ge0 kWh
 	dailyProduction      *prometheus.Desc // Etdy_ge1 kWh
+	temperature          *prometheus.Desc // T_AC_RDT1 C
 }
 
 // CurrentCollector returns a releases collector
@@ -57,6 +58,10 @@ func CurrentCollector(client *client.Client) prometheus.Collector {
 			prometheus.BuildFQName(namespace, subsystem, "daily_production_kwh"),
 			"Daily Production (Active)", nil, nil,
 		),
+		temperature: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, subsystem, "temperature_celcius"),
+			"Temperature", nil, nil,
+		),
 	}
 }
 
@@ -86,10 +91,11 @@ func (c *currentCollector) Collect(ch chan<- prometheus.Metric) {
 		return
 	}
 
-	ch <- prometheus.MustNewConstMetric(c.outputPower, prometheus.GaugeValue, get(data, "Pr1"))
-	ch <- prometheus.MustNewConstMetric(c.ratedPower, prometheus.GaugeValue, get(data, "APo_t1"))
+	ch <- prometheus.MustNewConstMetric(c.ratedPower, prometheus.GaugeValue, get(data, "Pr1"))
+	ch <- prometheus.MustNewConstMetric(c.outputPower, prometheus.GaugeValue, get(data, "APo_t1"))
 	ch <- prometheus.MustNewConstMetric(c.cumulativeProduction, prometheus.GaugeValue, get(data, "Et_ge0"))
 	ch <- prometheus.MustNewConstMetric(c.dailyProduction, prometheus.GaugeValue, get(data, "Etdy_ge1"))
+	ch <- prometheus.MustNewConstMetric(c.temperature, prometheus.GaugeValue, get(data, "T_AC_RDT1"))
 	ch <- prometheus.MustNewConstMetric(c.up, prometheus.GaugeValue, 1)
 }
 
