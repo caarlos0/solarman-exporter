@@ -33,7 +33,7 @@ func main() {
 	client, err := solarman.New(
 		cfg.AppID,
 		cfg.AppSecret,
-		cfg.Username,
+		cfg.Email,
 		cfg.Password,
 	)
 	if err != nil {
