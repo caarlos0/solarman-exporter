@@ -5,7 +5,7 @@ go 1.21.1
 require (
 	github.com/alecthomas/kingpin v2.2.6+incompatible
 	github.com/caarlos0/env/v9 v9.0.0
-	github.com/caarlos0/go-solarman v0.0.0-20231026010959-6dcfebb339d6
+	github.com/caarlos0/go-solarman v0.1.0
 	github.com/charmbracelet/log v0.2.5
 	github.com/prometheus/client_golang v1.17.0
 )
@@ -29,9 +29,8 @@ require (
 	github.com/prometheus/common v0.44.0 // indirect
 	github.com/prometheus/procfs v0.11.1 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/oauth2 v0.13.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
-	google.golang.org/appengine v1.6.7 // indirect
+	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 )
