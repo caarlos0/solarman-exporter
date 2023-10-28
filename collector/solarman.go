@@ -53,11 +53,11 @@ func CurrentCollector(client *solarman.Client, inverterSN string) prometheus.Col
 			"Total AC Output Power (Active)", nil, nil,
 		),
 		cumulativeProduction: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, subsystem, "cumulative_production_kwh"),
+			prometheus.BuildFQName(namespace, subsystem, "cumulative_production_kwh_total"),
 			"Cumulative Production (Active)", nil, nil,
 		),
 		dailyProduction: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, subsystem, "daily_production_kwh"),
+			prometheus.BuildFQName(namespace, subsystem, "daily_production_kwh_total"),
 			"Daily Production (Active)", nil, nil,
 		),
 		temperature: prometheus.NewDesc(
@@ -95,8 +95,8 @@ func (c *currentCollector) Collect(ch chan<- prometheus.Metric) {
 
 	ch <- prometheus.MustNewConstMetric(c.ratedPower, prometheus.GaugeValue, get(data, "Pr1"))
 	ch <- prometheus.MustNewConstMetric(c.outputPower, prometheus.GaugeValue, get(data, "APo_t1"))
-	ch <- prometheus.MustNewConstMetric(c.cumulativeProduction, prometheus.GaugeValue, get(data, "Et_ge0"))
-	ch <- prometheus.MustNewConstMetric(c.dailyProduction, prometheus.GaugeValue, get(data, "Etdy_ge1"))
+	ch <- prometheus.MustNewConstMetric(c.cumulativeProduction, prometheus.CounterValue, get(data, "Et_ge0"))
+	ch <- prometheus.MustNewConstMetric(c.dailyProduction, prometheus.CounterValue, get(data, "Etdy_ge1"))
 	ch <- prometheus.MustNewConstMetric(c.temperature, prometheus.GaugeValue, get(data, "T_AC_RDT1"))
 	ch <- prometheus.MustNewConstMetric(c.up, prometheus.GaugeValue, 1)
 }
