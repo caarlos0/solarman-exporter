@@ -20,6 +20,7 @@ type currentCollector struct {
 
 	ratedPower           *prometheus.Desc // Pr1 W
 	outputPower          *prometheus.Desc // APo_t1 W
+	inputPower           *prometheus.Desc // DPi_t1 W
 	cumulativeProduction *prometheus.Desc // Et_ge0 kWh
 	dailyProduction      *prometheus.Desc // Etdy_ge1 kWh
 	temperature          *prometheus.Desc // T_AC_RDT1 C
@@ -51,6 +52,10 @@ func CurrentCollector(client *solarman.Client, inverterSN string) prometheus.Col
 		outputPower: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, subsystem, "output_power_watts"),
 			"Total AC Output Power (Active)", nil, nil,
+		),
+		inputPower: prometheus.NewDesc(
+			prometheus.BuildFQName(namespace, subsystem, "input_power_watts"),
+			"Total DC Input Power (Active)", nil, nil,
 		),
 		cumulativeProduction: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, subsystem, "cumulative_production_kwh_total"),
@@ -95,6 +100,7 @@ func (c *currentCollector) Collect(ch chan<- prometheus.Metric) {
 
 	ch <- prometheus.MustNewConstMetric(c.ratedPower, prometheus.GaugeValue, get(data, "Pr1"))
 	ch <- prometheus.MustNewConstMetric(c.outputPower, prometheus.GaugeValue, get(data, "APo_t1"))
+	ch <- prometheus.MustNewConstMetric(c.inputPower, prometheus.GaugeValue, get(data, "DPi_t1"))
 	ch <- prometheus.MustNewConstMetric(c.cumulativeProduction, prometheus.CounterValue, get(data, "Et_ge0"))
 	ch <- prometheus.MustNewConstMetric(c.dailyProduction, prometheus.CounterValue, get(data, "Etdy_ge1"))
 	ch <- prometheus.MustNewConstMetric(c.temperature, prometheus.GaugeValue, get(data, "T_AC_RDT1"))
