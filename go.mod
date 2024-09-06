@@ -7,7 +7,7 @@ require (
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/caarlos0/go-solarman v0.1.1
 	github.com/charmbracelet/log v0.4.0
-	github.com/prometheus/client_golang v1.20.2
+	github.com/prometheus/client_golang v1.20.3
 )
 
 require (
