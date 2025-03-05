@@ -1,11 +1,13 @@
 module github.com/caarlos0/solarman-exporter
 
-go 1.21.1
+go 1.23.0
+
+toolchain go1.23.7
 
 require (
 	github.com/alecthomas/kingpin v2.2.6+incompatible
 	github.com/caarlos0/env/v10 v10.0.0
-	github.com/caarlos0/go-solarman v0.1.1
+	github.com/caarlos0/go-solarman v0.1.2
 	github.com/charmbracelet/log v0.4.0
 	github.com/prometheus/client_golang v1.21.1
 )
@@ -30,7 +32,7 @@ require (
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
-	golang.org/x/oauth2 v0.24.0 // indirect
+	golang.org/x/oauth2 v0.27.0 // indirect
 	golang.org/x/sys v0.28.0 // indirect
 	google.golang.org/protobuf v1.36.1 // indirect
 )
