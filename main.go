@@ -68,7 +68,7 @@ func main() {
 	http.Handle("/metrics", promhttp.Handler())
 
 	http.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
-		fmt.Fprintf(
+		_, _ = fmt.Fprintf(
 			w, `
 			<html>
 			<head><title>Solarman Exporter</title></head>
