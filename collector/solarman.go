@@ -1,3 +1,4 @@
+// Package collector is the prometheus metrics collector.
 package collector
 
 import (
@@ -66,7 +67,7 @@ func CurrentCollector(client *solarman.Client, inverterSN string) prometheus.Col
 			"Daily Production (Active)", nil, nil,
 		),
 		temperature: prometheus.NewDesc(
-			prometheus.BuildFQName(namespace, subsystem, "temperature_celcius"),
+			prometheus.BuildFQName(namespace, subsystem, "temperature_celsius"),
 			"Temperature", nil, nil,
 		),
 	}
