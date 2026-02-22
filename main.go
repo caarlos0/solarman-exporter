@@ -40,7 +40,31 @@ func main() {
 		log.Fatal("error creating client", "err", err)
 	}
 
-	prometheus.MustRegister(collector.CurrentCollector(client, cfg.InverterSN))
+	var found bool
+	stations, err := client.Stations()
+	if err != nil {
+		log.Fatal("error getting solarman stations", "err", err)
+	}
+
+	for _, station := range stations {
+		devs, err := client.StationDevices(station.ID)
+		if err != nil {
+			log.Fatal("error getting solarman station devices", "err", err, "station", station.ID)
+		}
+
+		for _, dev := range devs {
+			if dev.DeviceSn == cfg.InverterSN {
+				prometheus.MustRegister(collector.CurrentCollector(client, stations[0].ID))
+				found = true
+				break
+			}
+		}
+	}
+
+	if !found {
+		log.Fatal("could not find inverter", "sn", cfg.InverterSN)
+	}
+
 	http.Handle("/metrics", promhttp.Handler())
 
 	http.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {

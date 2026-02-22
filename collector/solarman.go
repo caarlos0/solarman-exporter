@@ -12,9 +12,9 @@ import (
 )
 
 type currentCollector struct {
-	mutex      sync.Mutex
-	client     *solarman.Client
-	inverterSN string
+	mutex    sync.Mutex
+	client   *solarman.Client
+	deviceID int
 
 	up             *prometheus.Desc
 	scrapeDuration *prometheus.Desc
@@ -28,12 +28,12 @@ type currentCollector struct {
 }
 
 // CurrentCollector returns a releases collector
-func CurrentCollector(client *solarman.Client, inverterSN string) prometheus.Collector {
+func CurrentCollector(client *solarman.Client, deviceID int) prometheus.Collector {
 	const namespace = "solarman"
 	const subsystem = "inverter"
 	return &currentCollector{
-		client:     client,
-		inverterSN: inverterSN,
+		client:   client,
+		deviceID: deviceID,
 		up: prometheus.NewDesc(
 			prometheus.BuildFQName(namespace, subsystem, "up"),
 			"Exporter is being able to talk with Solarman API",
@@ -92,7 +92,8 @@ func (c *currentCollector) Collect(ch chan<- prometheus.Metric) {
 	defer func() {
 		ch <- prometheus.MustNewConstMetric(c.scrapeDuration, prometheus.GaugeValue, time.Since(start).Seconds())
 	}()
-	data, err := c.client.CurrentData(c.inverterSN)
+
+	data, err := c.client.CurrentData(c.deviceID)
 	if err != nil {
 		log.Error("failed to collect", "err", err)
 		ch <- prometheus.MustNewConstMetric(c.up, prometheus.GaugeValue, 0)
