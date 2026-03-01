@@ -4,7 +4,7 @@ go 1.26
 
 require (
 	github.com/alecthomas/kingpin v2.2.6+incompatible
-	github.com/caarlos0/env/v11 v11.3.1
+	github.com/caarlos0/env/v11 v11.4.0
 	github.com/caarlos0/go-solarman v0.1.4
 	github.com/charmbracelet/log v0.4.2
 	github.com/prometheus/client_golang v1.23.2
